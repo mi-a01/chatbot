@@ -1,0 +1,10 @@
+# 環境変数ファイル
+.env
+
+# データ類（アップロードしない）
+data/*.csv
+data/*.db
+
+# Pythonキャッシュ
+__pycache__/
+*.pyc
