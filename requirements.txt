@@ -5,3 +5,4 @@ pandas
 python-dotenv
 pymysql
 openai
+psycopg2-binary
