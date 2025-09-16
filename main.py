@@ -13,8 +13,10 @@ SERVICE_ACCOUNT_FILE = os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"]
 SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 FILE_ID = "1TmBvByxQNEbuh-FdSCn2XsA2TDIFdTOM"  # Google DriveのCSVファイルID
 
+creds_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
+
 def download_csv_from_drive():
-    creds = Credentials.from_service_account_info(GOOGLE_APPLICATION_CREDENTIALS_JSON, scopes=SCOPES)
+    creds = Credentials.from_service_account_info(creds_info, scopes=SCOPES)
     service = build("drive", "v3", credentials=creds)
     request = service.files().get_media(fileId=FILE_ID)
     fh = BytesIO()
@@ -47,4 +49,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
