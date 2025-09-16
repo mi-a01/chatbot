@@ -1,9 +1,11 @@
+import os
+import json
 import pandas as pd
 from io import BytesIO
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 from google.oauth2.service_account import Credentials
-from db import init_db, save_records  # save_to_dbをsave_recordsに変更
+from db import init_db, save_to_db  # save_to_dbをsave_recordsに変更
 from mask import mask_company   # 企業名マスク処理
 
 # Google Drive設定
@@ -12,7 +14,7 @@ SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 FILE_ID = "1TmBvByxQNEbuh-FdSCn2XsA2TDIFdTOM"  # Google DriveのCSVファイルID
 
 def download_csv_from_drive():
-    creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    creds = Credentials.from_service_account_info(creds_info, scopes=SCOPES)
     service = build("drive", "v3", credentials=creds)
     request = service.files().get_media(fileId=FILE_ID)
     fh = BytesIO()
@@ -40,7 +42,7 @@ def main():
     print("CSV読み込み...")
     records = load_csv_and_process()
     print("DB保存...")
-    save_records(records)
+    save_to_db(records)
     print("完了！")
 
 if __name__ == "__main__":
