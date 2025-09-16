@@ -33,8 +33,8 @@ def load_csv_and_process():
     df = download_csv_from_drive()
     records = []
     for _, row in df.iterrows():
-        summary = mask_company(row["テキスト要約"])  # Q列
-        content = mask_company(row["通話テキスト"])   # R列
+        summary = mask_company(str(row["テキスト要約"]))
+        content = mask_company(str(row["通話テキスト"]))
         records.append({"summary": summary, "content": content})
     return records
 
