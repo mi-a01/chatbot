@@ -18,8 +18,6 @@ def search(keyword: str = Query(..., min_length=1)):
     session.close()
     return [{"summary": r.summary, "content": r.content} for r in results]
 
-if __name__ == "__main__":
-    import main  # ← DB処理を実行
-    uvicorn.run(app, host="0.0.0.0", port=10000)
 
 # https://chatbot-o87s.onrender.com/search?keyword=%E9%9B%BB%E8%A9%B1
+
