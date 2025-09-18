@@ -11,7 +11,8 @@ app = FastAPI()
 engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
 
-@app.get("/search")   
+@app.get("/search")
+def search(keyword: str = Query(..., min_length=1)):
     session = SessionLocal()
     results = session.query(CallRecord).filter(CallRecord.content.contains(keyword)).all()
     session.close()
@@ -41,4 +42,3 @@ def retrieval(keyword: str = Query(None, description="検索キーワード")):
         })
 
     return {"records": records}
-
