@@ -18,6 +18,22 @@ def search(keyword: str = Query(..., min_length=1)):
     session.close()
     return [{"summary": r.summary, "content": r.content} for r in results]
 
-
 # https://chatbot-o87s.onrender.com/search?keyword=%E9%9B%BB%E8%A9%B1
 
+# ここから Dify用 retrieval API
+@app.get("/retrieval")
+def retrieval(keyword: str = Query(..., description="検索キーワード")):
+    session = SessionLocal()
+    results = session.query(CallRecord).filter(CallRecord.content.contains(keyword)).all()
+    session.close()
+
+    records = []
+    for i, r in enumerate(results):
+        records.append({
+            "id": str(i),
+            "title": r.summary or "",
+            "content": r.content or "",
+            "metadata": {"source": "render-db"}
+        })
+
+    return {"records": records}
