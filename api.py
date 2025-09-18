@@ -22,9 +22,14 @@ def search(keyword: str = Query(..., min_length=1)):
 
 # ここから Dify用 retrieval API
 @app.get("/retrieval")
-def retrieval(keyword: str = Query(..., description="検索キーワード")):
+def retrieval(keyword: str = Query(None, description="検索キーワード")):
     session = SessionLocal()
-    results = session.query(CallRecord).filter(CallRecord.content.contains(keyword)).all()
+    query = session.query(CallRecord)
+
+    if keyword:  # keywordがあるときだけ絞り込み
+        query = query.filter(CallRecord.content.contains(keyword))
+
+    results = query.all()
     session.close()
 
     records = []
