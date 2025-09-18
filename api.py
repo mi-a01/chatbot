@@ -11,11 +11,7 @@ app = FastAPI()
 engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
 
-@app.get("/search")
-def search(keyword: str = Query(..., min_length=1)):
-    if not keyword:  # キーワードなしなら空配列
-        return {"records": []}
-        
+@app.get("/search")   
     session = SessionLocal()
     results = session.query(CallRecord).filter(CallRecord.content.contains(keyword)).all()
     session.close()
@@ -26,11 +22,13 @@ def search(keyword: str = Query(..., min_length=1)):
 # ここから Dify用 retrieval API
 @app.get("/retrieval")
 def retrieval(keyword: str = Query(None, description="検索キーワード")):
-    if not keyword:  # キーワードなしなら空配列
-        return {"records": []}
-
     session = SessionLocal()
-    results = session.query(CallRecord).filter(CallRecord.content.contains(keyword)).all()
+    query = session.query(CallRecord)
+
+    if keyword:  # keywordがあるときだけ絞り込み
+        query = query.filter(CallRecord.content.contains(keyword))
+
+    results = query.all()
     session.close()
 
     records = []
@@ -43,3 +41,4 @@ def retrieval(keyword: str = Query(None, description="検索キーワード")):
         })
 
     return {"records": records}
+
